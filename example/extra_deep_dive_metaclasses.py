@@ -1,5 +1,11 @@
 import datetime
 
+class A():
+    pass
+
+# A default class has the type type 
+print(f'Type of A: {type(A)}')
+
 class KwargsToAttributes(type):
     def __call__(self, *args, **kwargs):
 
@@ -17,11 +23,12 @@ class KwargsToAttributes(type):
 class Person(object, metaclass=KwargsToAttributes):
     pass
 
-
 new_person = Person(name = "Per", birthdate = datetime.date(1958, 10, 1))
 
+# A class with a metaclass set can have a custom type
+print(f'Type of Person: {type(Person)}')
 
-print(new_person.name)
-print(new_person.birthdate)
+# The metaclass has set the class attributes from kwargs
 
-
+print(f'Attribute name: {new_person.name}')
+print(f'Attribute birthdate: {new_person.birthdate}')
