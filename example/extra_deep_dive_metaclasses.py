@@ -29,10 +29,9 @@ class Person(object, metaclass=KwargsToAttributes):
 
 new_person = Person(name="Per", birthdate=datetime.date(1958, 10, 1))
 
-# A class with a metaclass set can have a custom type
+# A class with a metaclass can have a custom type
 print(f'Type of Person: {type(Person)}')
 
-# The metaclass has set the class attributes from kwargs
-
+# The metaclass sets class attributes from kwargs
 print(f'Attribute name: {new_person.name}')
 print(f'Attribute birthdate: {new_person.birthdate}')
