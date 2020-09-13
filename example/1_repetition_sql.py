@@ -41,7 +41,7 @@ try:
 
         customer_orders = conn.execute(
             """
-            SELECT c.id as customer_id, c.firstname, c.lastname, o.status
+            SELECT o.id as order_id, c.id as customer_id, c.firstname, c.lastname, o.status
             FROM orders AS o
             INNER JOIN customers AS c ON o.customer_id=c.id
             """
