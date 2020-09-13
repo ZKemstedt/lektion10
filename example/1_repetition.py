@@ -6,7 +6,7 @@ Until now we have used
 - Built-in functions: i.e slice, chr, str, range, int
     see [https://docs.python.org/3/library/functions.html#built-in-functions]
 
-- Build-in constants i.e False, True, None 
+- Build-in constants i.e False, True, None
     see: [https://docs.python.org/3/library/constants.html#built-in-consts]
 
 - Functions definitions i.e def a_func()
@@ -22,9 +22,12 @@ a_string = "a string value"
 # using built-in function slice and assign it
 a_sliced_string = a_string[0:9]
 
+
 # defining a function
 def a_func(attribute):
-    if(attribute): return True
+    if(attribute):
+        return True
+
 
 '''
 - The Callable types can be used with call operation "()" i.e func_name()
@@ -47,8 +50,6 @@ a_list.sort()
 We can use type() to investigate their type
     see [https://docs.python.org/3/library/functions.html#type]
 '''
-
-
 
 
 '''
