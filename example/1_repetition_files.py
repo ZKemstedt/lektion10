@@ -15,11 +15,14 @@ try:
     try:
         r_file.read()
         r_file.write("abc")
-    finally:
-        print("close file")
-        r_file.close()
+    except Exception as e:
+        print(f"Exception while reading: {e}")
 except Exception as e:
-    print(f"Exception: {e}")
+    print(f"Exception while opening: {e}")
+finally:
+    print("close file")
+    r_file.close()
+
 
 # handle errors and close with context manager (no need to close)
 try:
