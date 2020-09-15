@@ -91,6 +91,9 @@ class Dog(object):
     def set_name(self, name: str) -> None:
         self.name = name
 
+    def set_owner(self, owner: str) -> None:
+        self.owner = owner
+
 
 class DogDaycare(object):
     """"""
@@ -164,7 +167,7 @@ class DogDaycare(object):
         self.boss_name = name
 
     def list_dogs_short(self) -> None:
-        print('index\tras\tålder\tnamn\tägare')
+        print('index\tras\tnamn\tålder\tägare')
         for i, dog in enumerate(self.dogs):
             print(f'{i + 1}\t{dog.race} \t{dog.name} \t{dog.age} \t{dog.owner}')
 
@@ -182,6 +185,7 @@ class DogDaycare(object):
     def change_dog_owner(self, *args) -> None:
         if len(args) < 2:
             print('`change_dog_owner`: invalid argument count')
+            return
         if len(args) > 2:
             # that's a long name >.>
             new_name = ' '.join(args[1:])
