@@ -78,7 +78,7 @@ class Dog(object):
     ras:   {self.race}
     ålder: {self.age}
     ägare: {self.owner}
-    bästa vänner: {''.join([friend.name for friend in self.best_friends])}
+    bästa vänner: {', '.join([friend.name for friend in self.best_friends])}
         '''
 
     def add_best_friend(self, friend) -> None:
