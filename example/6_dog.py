@@ -1,12 +1,12 @@
 """
     1. Skapa en klass som heter Dog med attributen namn,
     ålder, ägare, ras, favoritleksak
-    
+
     2. När man initialiserar (skapar) en ny instans av klassen
      (med init), kräv att man skriver in namn, ålder och ägare.
      Hunden behöver däremot inte ha en favoritleksak eller bästa
      hundkompis när den läggs till.
-    
+
     3. Skapa en metod som heter set_name som ändrar hundens namn
 
     4. Skapa en metod som heter set_age som ändrar hundens ålder.
@@ -15,7 +15,7 @@
 
     6. Skapa en metod som heter add_best_friend. Bästa hundkompisen ska
      vara en instans av objektet Dog. Antal bästa hundkompisar får vara max 1,
-     men om det är en golden retriever får man ha hur många som helst. 
+     men om det är en golden retriever får man ha hur många som helst.
 """
 
 
