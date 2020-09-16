@@ -51,14 +51,14 @@ INSTRUCTIONS = '''
 En kort fin menig, typ en slogan
 
 [instructioner/alternativ]
-1 [-a] -visa all hundar, om -A är givet så visas all information för varje hund
-2 <refno> -visa all info om en hund
-3 <ras> <namn> <ålder> <ägare> -lägg till en hund
-4 <refno> -ta bort en hund
-5 <refno> <nytt namn> -byt namn på en hund
-6 <refno> <nya ägarens namn> -byt namn på en hunds ägare
-7 <refno> <refno> -registrera en hunds bästa kompis
-8 <nytt namn> -byt namn på hunddagisets chef
+1 [, -a] -visa all hundar, om -A är givet så visas all information för varje hund
+2, <refno> -visa all info om en hund
+3, <ras>, <namn>, <ålder>, <ägare> -lägg till en hund
+4, <refno> -ta bort en hund
+5, <refno>, <nytt namn> -byt namn på en hund
+6, <refno>, <nya ägarens namn> -byt namn på en hunds ägare
+7, <refno>, <refno> -registrera en hunds bästa kompis
+8, <nytt namn> -byt namn på hunddagisets chef
 
 0 -stäng av programmet
 '''
@@ -66,26 +66,27 @@ En kort fin menig, typ en slogan
 
 class Dog(object):
     """"""
-    def __init__(self, race: str, name: str, age: str, owner: str):
+
+    def __init__(self, name: str, age: str, owner: str, breed: str) -> None:
         self.name = name
         self.age = age
         self.owner = owner
-        self.race = race
-        self.best_friends = []
+        self.breed = breed
+        self.friends = []
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'''\t\t{self.name.title()}
-    ras:   {self.race}
+    ras:   {self.breed}
     ålder: {self.age}
     ägare: {self.owner}
-    bästa vänner: {', '.join([friend.name for friend in self.best_friends])}
+    bästa vänner: {', '.join([friend.name for friend in self.friends])}
         '''
 
-    def add_best_friend(self, friend) -> None:
-        if not self.race == 'golden-retriever' and self.best_friends:
-            print(f'{self.name.title()} already has a best friend {self.best_friends[0].name.title()}')
+    def add_friend(self, friend: Dog) -> None:
+        if not self.breed == 'golden-retriever' and self.friends:
+            print(f'{self.name.title()} already has a best friend {self.friends[0].name.title()}')
             return
-        self.best_friends.append(friend)
+        self.friends.append(friend)
         print(f'Successfully registered {friend.name.title()} as a best friend of {self.name.title()}')
 
     def set_name(self, name: str) -> None:
@@ -97,114 +98,78 @@ class Dog(object):
 
 class DogDaycare(object):
     """"""
-    def __init__(self, name: str, boss_name: str):
+    def __init__(self, name: str, boss_name: str) -> None:
         self.name = name
         self.boss_name = boss_name
         self.dogs = []
 
-    def __str__(self):
-        """Returns a string containing info about the daycare"""
-        pass  # not required, and I'm too tired to implement it right now
+    def validate_dog(self, key: str) -> t.Union[Dog, None]:
+        if key.isdigit():
+            try:
+                key = int(key) - 1
+                dog = self.dogs[key]
+            except IndexError:
+                print(f'there\'s no dog at index {key}')
+            except Exception as e:
+                print(f'unknown error: {e}')
+            else:
+                return dog
+            return None
+        print('index must be an integer')
+        return None
 
-    def register_dog_friend(self, *args) -> None:
-        if len(args) != 2:
-            print('`register_dog_friend`: invalid argument count')
-            return
-        try:
-            i = int(args[0]) - 1
-            fi = int(args[1]) - 1
-            friend = self.dogs[fi]
-        except ValueError:
-            print(f'`register_dog_friend`: dog identifiers must be integers {args[0]} {args[1]}')
-            return
-        except IndexError:
-            print(f'`register_dog_friend`: there\'s no dog (friend) with index {fi}')
-            return
-        try:
-            self.dogs[i].add_best_friend(friend)
-        except IndexError:
-            print(f'`register_dog_friend`: there\'s no dog with index {i}')
-            return
+    def register_dog_friend(self, i: str, j: str) -> None:
+        dog = self.validate_dog(i)
+        friend = self.validate_dog(j)
+        if dog and friend:
+            dog.add_friend(friend)
 
-    def add_dog(self, *args):
-        try:
-            dog = Dog(*args)
-        except Exception as e:
-            print('`add_dog`: invalid constructor arguments')
-            print(f'`add-dog`: exception: {e}')
+    def add_dog(self, name: str, age: str, owner: str, breed: str) -> None:
+        if age.isdigit():
+            self.dogs.append(Dog(name, age, owner, breed))
         else:
-            self.dogs.append(dog)
+            print('error: age must be an integer')
 
-    def remove_dog(self, i):
-        try:
-            del self.dogs[int(i) + 1]
-        except ValueError:
-            print(f'`remove_dog`: identifier must be an integer {args[0]}')
-        except IndexError:
-            print(f'`remove_dog`: there\'s no dog with index {args[0]}')
+    def remove_dog(self, i: str) -> None:
+        dog = self.validate_dog(i)
+        if dog:
+            self.dogs.remove(dog)
+            print('successfully removed the dog')
 
-    def set_dog_name(self, *args):
-        if len(args) < 2:
-            print('`set_dog_name`: invalid argument count')
-            return
-        if len(args) > 2:
-            # that's a long name >.>
-            new_name = ' '.join(args[1:])
-        else:
-            new_name = args[1]
-        try:
-            i = int(args[0]) - 1
-            self.dogs[i].set_name(new_name)
-            print('sucessfully updated the name')
-        except ValueError:
-            print(f'`set_dog_name`: identifier must be an integer {args[0]}')
-        except IndexError:
-            print(f'`set_dog_name`: there\'s no dog with index {args[0]}')
+    def set_dog_name(self, i: int, name: str) -> None:
+        dog = self.validate_dog(i)
+        if dog:
+            dog.set_name(name)
+            print('successfully updated the name')
 
-    def set_boss_name(self, name: str, *names: t.Optional[t.List[str]]) -> None:
-        if names:
-            name += ' ' + ' '.join(names)  # space before and between extra names
+    def set_boss_name(self, name: str]) -> None:
         self.boss_name = name
 
     def list_dogs_short(self) -> None:
         print('index\tras\tnamn\tålder\tägare')
         for i, dog in enumerate(self.dogs):
-            print(f'{i + 1}\t{dog.race} \t{dog.name} \t{dog.age} \t{dog.owner}')
+            print(f'{i + 1}\t{dog.breed} \t{dog.name} \t{dog.age} \t{dog.owner}')
 
-    def list_dogs_long(self):
+    def list_dogs_long(self) -> None:
         pass  # not required, and I'm too tired to implement it right now
 
     def display_dog(self, i: str) -> None:
-        try:
-            print(self.dogs[int(i) - 1])
-        except ValueError:
-            print(f'`display_dog`: identifier must be an integer {args[0]}')
-        except IndexError:
-            print(f'`display_dog`: there\'s no dog with index {args[0]}')
+        dog = self.validate_dog(i)
+        if dog:
+            print(dog)
 
-    def change_dog_owner(self, *args) -> None:
-        if len(args) < 2:
-            print('`change_dog_owner`: invalid argument count')
-            return
-        if len(args) > 2:
-            # that's a long name >.>
-            new_name = ' '.join(args[1:])
-        else:
-            new_name = args[1]
-        try:
-            i = int(args[0]) - 1
-            self.dogs[i].set_owner(new_name)
-        except ValueError:
-            print(f'`change_dog_owner`: identifier must be an integer {args[0]}')
-        except IndexError:
-            print(f'`change_dog_owner`: there\'s no dog (friend) with index {args[0]}')
+    def change_dog_owner(self, i: str, name: str) -> None:
+        dog = self.validate_dog(i)
+        if dog:
+            dog.set_owner(name)
+            print('successfully changed dog\'s owner')
 
 
 def user_input() -> t.Tuple[str, ]:
     return input('>> ').lower().split(' ')
 
 
-# 3 bäver putte 35 jeppe
+# 3 putte 35 jeppe bäver
 #   Skapa en meny som frågar användaren om denne vill lägga till en ny hund, ta bort en hund, ändra chefsnamn,
 #    ändra hundnamn, ändra hundägare osv eller skriva ut en lista på alla hundar som hunddagiset har.
 
@@ -213,45 +178,41 @@ if __name__ == '__main__':
     print(INSTRUCTIONS)
     while True:
         args = user_input()
-        action = args[0]    # identifies what to do
-        if len(args) < 2:
-            if action == '0':
-                break                       # '0' DONE
-            elif action == '1':
-                daycare.list_dogs_short()   # '1' DONE
-            elif action == '?':
-                print(INSTRUCTIONS)         # '?' DONE
-            elif not action:
-                print('type 0 to exit, ? for help.')    # '' Done
-            continue    # all other actions require at least 2 parameters
+        action = args.pop(0)    # identifies what to do
 
-        params = args[1:]   # parameters to pass
-        if action == '1' and params[0] == '-a':
-            print('not implemented.')
-            pass  # display all dogs long
-        elif action == '2':
-            daycare.display_dog(params[0])  # '2' DONE
-        elif action == '3':
-            daycare.add_dog(*params)         # '3' DONE
-        elif action == '4':
-            daycare.remove_dog(params[0])   # '4' DONE
-        elif action == '5':
-            daycare.set_dog_name(*params)   # '5' DONE
-        elif action == '6':
-            daycare.change_dog_owner(*params)  # '6' DONE
-        elif action == '7':
-            daycare.register_dog_friend(*params)  # '7'DONE
-        elif action == '8':
-            daycare.set_boss_name(params)   # '8' DONE
+        if len(args) < 1:
+            if action == '0':
+                break
+            elif action == '1':
+                daycare.list_dogs_short()
+            elif action == '?':
+                print(INSTRUCTIONS)
+            elif not action:
+                print('type 0 to exit, ? for help.')
+            continue    # all other actions require at least 2 parameters
+        else:
+            try:
+                if action == '3':
+                    daycare.add_dog(*args)
+                elif action == '5':
+                    daycare.set_dog_name(*args)
+                elif action == '6':
+                    daycare.change_dog_owner(*args)
+                elif action == '7':
+                    daycare.register_dog_friend(*args)
+                # elif action == '1' and args == '-a':
+                #     print('not implemented.')
+                #     pass  # display all dogs long
+                elif action == '2':
+                    daycare.display_dog(*args) 
+                elif action == '4':
+                    daycare.remove_dog(*args)
+                elif action == '8':
+                    daycare.set_boss_name(*params)
+            except TypeError as e:
+                print(f'Error: {e}')  # invalid argument count
 
 # TODO
 # list -a
 # fill in missing docstrings
-# fix inconsistent use of typing / annotations
-# make a real handler-method and/or parser in daycare for applying actions on dog objects
-#   lookup dog by name
-#   lookup dog by owner
-#   lookup dog by race
-#   change order in the if-chain to check for argument lenth
-#   change argument-splitter from space to comma (handle names with spaces)
 # don't get overworked
