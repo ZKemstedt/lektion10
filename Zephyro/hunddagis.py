@@ -1,4 +1,3 @@
-
 # Uppgiftsbeskrivning
 
 # Vägledning del 1: Hund
@@ -65,7 +64,7 @@ En kort fin menig, typ en slogan
 
 
 class Dog(object):
-    """"""
+    """Represents a dog with several simple attributes."""
 
     def __init__(self, name: str, age: str, owner: str, breed: str) -> None:
         self.name = name
@@ -82,7 +81,13 @@ class Dog(object):
     bästa vänner: {', '.join([friend.name for friend in self.friends])}
         '''
 
-    def add_friend(self, friend: Dog) -> None:
+    def add_friend(self, friend: object) -> None:
+        """
+        Add a best friend maximum one, golden-retriever may have many.
+        
+        Args:
+            dog (Dog): A friendly Dog object
+        """
         if not self.breed == 'golden-retriever' and self.friends:
             print(f'{self.name.title()} already has a best friend {self.friends[0].name.title()}')
             return
@@ -97,7 +102,6 @@ class Dog(object):
 
 
 class DogDaycare(object):
-    """"""
     def __init__(self, name: str, boss_name: str) -> None:
         self.name = name
         self.boss_name = boss_name
@@ -142,7 +146,7 @@ class DogDaycare(object):
             dog.set_name(name)
             print('successfully updated the name')
 
-    def set_boss_name(self, name: str]) -> None:
+    def set_boss_name(self, name: str) -> None:
         self.boss_name = name
 
     def list_dogs_short(self) -> None:
@@ -150,8 +154,8 @@ class DogDaycare(object):
         for i, dog in enumerate(self.dogs):
             print(f'{i + 1}\t{dog.breed} \t{dog.name} \t{dog.age} \t{dog.owner}')
 
-    def list_dogs_long(self) -> None:
-        pass  # not required, and I'm too tired to implement it right now
+    # def list_dogs_long(self) -> None:
+    #     pass  # not required, and I'm too tired to implement it right now
 
     def display_dog(self, i: str) -> None:
         dog = self.validate_dog(i)
@@ -179,8 +183,7 @@ if __name__ == '__main__':
     while True:
         args = user_input()
         action = args.pop(0)    # identifies what to do
-
-        if len(args) < 1:
+        if not args:
             if action == '0':
                 break
             elif action == '1':
@@ -189,7 +192,6 @@ if __name__ == '__main__':
                 print(INSTRUCTIONS)
             elif not action:
                 print('type 0 to exit, ? for help.')
-            continue    # all other actions require at least 2 parameters
         else:
             try:
                 if action == '3':
